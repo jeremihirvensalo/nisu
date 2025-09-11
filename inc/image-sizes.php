@@ -2,6 +2,9 @@
 
 namespace NISU;
 
+/**
+ * @todo Refactor
+ */
 class Image_Sizes {
 
   public function __construct() {
