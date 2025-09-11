@@ -30,6 +30,18 @@ class Main {
     $image_sizes = &$metadata["sizes"];
     foreach($image_sizes as $size_slug => $metadata) {
 
+      /**
+       * Skip the renaming for the image size.
+       * 
+       * @param bool Skip renaming
+       * @param string Image size slug
+       * 
+       * @since 0.1.0
+       */
+      if(apply_filters("nisu_skip_image_size", false, $size_slug)) {
+        continue;
+      }
+
       $image = new NISU\Core\Image($size_slug, $metadata);
 
       $absolute_filepath = $image->get_absolute_filepath();

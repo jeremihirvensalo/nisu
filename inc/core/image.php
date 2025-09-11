@@ -116,7 +116,15 @@ class Image {
 
     // Get absolute path to the uploads folder base
     $uploads_location_data = wp_get_upload_dir(); // Can we trust that the result is guaranteed?
+    $uploads_folder = isset($uploads_location_data["basedir"]) ? $uploads_location_data["basedir"] : "";
 
-    return isset($uploads_location_data["basedir"]) ? $uploads_location_data["basedir"] : "";
+    /**
+     * Absolute path to the uploads folder.
+     * 
+     * @param string Path to the uploads folder
+     * 
+     * @since 0.1.0
+     */
+    return apply_filters("nisu_uploads_folder_path", $uploads_folder);
   }
 }
