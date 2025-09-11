@@ -11,6 +11,8 @@ defined("ABSPATH") || exit;
 define("NISU_PLUGIN_PATH", plugin_dir_path(__FILE__));
 define("NISU_PLUGIN_URL", plugin_dir_url(__FILE__));
 
-require_once NISU_PLUGIN_PATH . "inc/image-sizes.php";
+foreach(glob(NISU_PLUGIN_PATH . "inc/*.php") as $filename) {
+  require_once $filename;
+} 
 
-new NISU\Image_Sizes();
+add_filter("wp_generate_attachment_metadata", "\NISU\Main::rename_image_sizes", 10, 1);

@@ -42,6 +42,26 @@ class Image {
     return $width . "x" . $heigth;
   }
 
+  public function set_filepath(string $new_filepath): string {
+    if(!$new_filepath) {
+      return $this->relative_filepath;
+    }
+
+
+    /**
+     * @todo CHECK THAT THE CODE BELOW WORKS. This has been written while on a plane 
+     * and the code has not been tested at all.
+     */
+
+    $success = rename($this->get_absolute_filepath(), $new_filepath);
+    if($success) {
+
+      $this->relative_filepath = str_replace($this->uploads_folder, "", $new_filepath);
+    }
+
+    return $this->relative_filepath; 
+  }
+
   private function get_uploads_folder_base(): string {
 
     // Get absolute path to the uploads folder base

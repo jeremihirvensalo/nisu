@@ -36,15 +36,8 @@ class Main {
       // Get the filepath with the image size slug
       $new_filepath = self::get_new_image_size_filepath($absolute_filepath, $size_slug, $default_image_size_suffix);
       
-      /**
-       * @todo move this shi to the image class
-       */
-      // Change the filepath
-      // $success = self::set_filepath($old_filepath, $new_filepath);
-      // if($success) {
-
-      // }
-
+      // Set the new filepath and save the location information
+      $image_sizes[$size_slug]["file"] = $image->set_filepath($new_filepath);
     }
 
     return $metadata;
@@ -68,13 +61,4 @@ class Main {
     $match_position = strrpos($absolute_filepath, $default_image_size_suffix);
     return $match_position !== false ? $match_position : -1;
   }
-
-  // private static function set_filepath(string $old_filepath, string $new_filepath): false {
-  //   if(!$new_filepath) {
-  //     return false;
-  //   }
-
-  //   return rename($old_filepath, $new_filepath);
-  // }
-
 }
