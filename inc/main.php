@@ -6,6 +6,16 @@ use NISU\Core\Image;
 
 class Main {
 
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * Changes the default image size filenames to include the size slug instead of the actual image size 
+   * in pixels. The function is designed to be used with the `wp_generate_attachment_metadata` hook.
+   * 
+   * @param array $metadata Image metadata
+   * 
+   * @return array Image metadata
+   */
   public static function rename_image_sizes(array $metadata): array {
     
     // Abort if the metadata is not for an image or something has gone wrong(?)
@@ -43,7 +53,18 @@ class Main {
     return $metadata;
   }
 
-  private static function get_new_image_size_filepath(string $absolute_filepath, string $size_slug, int $default_image_size_suffix): string {
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * Get the image filepath with the image size slug.
+   * 
+   * @param string $absolute_filepath Absolute filepath to the image file
+   * @param string $size_slug Image size slug
+   * @param string $default_image_size_suffix The default image size filename suffix to replace
+   * 
+   * @return string The new absolute filepath
+   */
+  private static function get_new_image_size_filepath(string $absolute_filepath, string $size_slug, string $default_image_size_suffix): string {
 
     $default_size_slug_position = self::get_image_size_slug_position($default_image_size_suffix, $absolute_filepath);
     if($size_slug_position < 0) {
@@ -53,6 +74,14 @@ class Main {
     return substr_replace($absolute_filepath, $size_slug, $size_slug_position, strlen($default_image_size_suffix));
   }
 
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * @param string The default image size filename suffix
+   * @param string Absolute filepath to the image
+   * 
+   * @return int Index of the last occurrence of the default size suffix or -1 if no match found
+   */
   private static function get_image_size_slug_position(string $default_image_size_suffix, string $absolute_filepath): int {
     if(!$default_image_size_suffix) {
       return -1;
