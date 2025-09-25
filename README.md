@@ -35,20 +35,3 @@ add_filter("nisu_skip_image_size", function(bool $skip, string $image_size){
 }, 10, 2);
 
 ```
-
-### nisu_uploads_folder_path
-
-The `nisu_uploads_folder_path` provides a way to filter the absolute path to the uploads folder. This might be useful if you have custom uploads folder. It is important that the provided path is an absolute path otherwise the plugin won't work proprely.
-
-```php
-
-/**
- * @param string $uploads_folder Absolute path to the uploads folder
- * 
- * @return string
- */
-add_filter("nisu_uploads_folder_path", function(string $uploads_folder){
-
-  return "/jedi/business";
-}, 10, 1);
-```

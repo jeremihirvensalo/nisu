@@ -5,104 +5,31 @@ namespace NISU\Core;
 class Image {
 
   /**
-   * @var string Image size slug
-   */
-  private string $image_size;
-
-  /**
-   * @var int Image width
-   */
-  private int $width;
-
-  /**
-   * @var int Image height
-   */
-  private int $height;
-
-  /**
-   * @var string Relative filepath to the image file from the uploads folder
-   */
-  private string $relative_filepath;
-
-  /**
    * @var string Absolute path to the uploads folder
    */
-  private string $uploads_folder;
+  private string $uploads_path = "";
 
   /**
-   * Constructor 
+   * @var string Relative path from the uploads folder base
+   */
+  private string $relative_path = "";
+
+  /**
+   * @var array Image size files
+   */
+  private array $image_sizes = [];
+
+  /**
+   * Constructor.
    * 
-   * @param string $image_size Image size slug
-   * @param array $metadata Image metadata
+   * @param array $image_data Image data
    * 
    * @return void
    */
-  public function __construct(string $image_size, array $metadata) {
-    $this->image_size = $image_size;
+  public function __construct(array $image_data) {
 
-    $this->width = isset($metadata["width"]) ? $metadata["width"] : 0;
-    $this->height = isset($metadata["height"]) ? $metadata["height"] : 0;
-
-    $this->relative_filepath = isset($metadata["file"]) ? $metadata["file"] : "";
-
-    $this->uploads_folder = $this->get_uploads_folder_base();
-  }
-
-  /**
-   * @author Jeremi Hirvensalo
-   * 
-   * Get absolute filepath to the image.
-   * 
-   * @return string Absolute filepath or empty string if uploads folder or relative path aren't defined
-   */
-  public function get_absolute_filepath(): string {
-
-    if(!$this->uploads_folder || $this->absolute_filepath) {
-      return "";
-    }
-
-    return $this->uploads_folder . "/" . $this->relative_filepath;
-  }
-
-  /**
-   * @author Jeremi Hirvensalo
-   * 
-   * Get default image size suffix used in the filenames.
-   * 
-   * @return string Default image size suffix or empty string if couldn't create one
-   */
-  public function get_default_image_size_suffix(): string {
-
-    if(!$this->width || !$this->height) { // This should never be true but check just in case
-      return "";
-    }
-
-    return $width . "x" . $heigth;
-  }
-
-  /**
-   * @author Jeremi Hirvensalo
-   * 
-   * Set new filepath for the image. Also updates the relative filepath if successful.
-   */
-  public function set_filepath(string $new_filepath): string {
-    if(!$new_filepath) {
-      return $this->relative_filepath;
-    }
-
-
-    /**
-     * @todo CHECK THAT THE CODE BELOW WORKS. This has been written while on a plane 
-     * and the code has not been tested at all.
-     */
-
-    $success = rename($this->get_absolute_filepath(), $new_filepath);
-    if($success) {
-
-      $this->relative_filepath = str_replace($this->uploads_folder, "", $new_filepath);
-    }
-
-    return $this->relative_filepath; 
+    $this->set_uploads_path($image_data);
+    $this->set_image_sizes($image_data);
   }
 
   /**
@@ -112,19 +39,74 @@ class Image {
    * 
    * @return string
    */
-  private function get_uploads_folder_base(): string {
+  public function get_uploads_path(): string {
+    return $this->uploads_path;
+  }
+
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * Get the image size files
+   * 
+   * @return array
+   */
+  public function get_image_sizes(): array {
+    return $this->image_sizes;
+  }
+
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * Set absolute path to the uploads folder.
+   * 
+   * @param array $image_data Image data. Must contain "file" key with the filename of the image.
+   * 
+   * @return string
+   */
+  private function set_uploads_path(array $image_data): void {
+    
+    if(!isset($image_data["file"])) {
+
+      /**
+       * @todo add logging?
+       */
+      return;
+    }
+
+    $path_parts = explode("/", $image_data["file"]);
+
+    // Remove the filename
+    array_pop($path_parts);
 
     // Get absolute path to the uploads folder base
     $uploads_location_data = wp_get_upload_dir(); // Can we trust that the result is guaranteed?
-    $uploads_folder = isset($uploads_location_data["basedir"]) ? $uploads_location_data["basedir"] : "";
+    $uploads_base = isset($uploads_location_data["basedir"]) ? $uploads_location_data["basedir"] : "";
 
-    /**
-     * Absolute path to the uploads folder.
-     * 
-     * @param string Path to the uploads folder
-     * 
-     * @since 0.1.0
-     */
-    return apply_filters("nisu_uploads_folder_path", $uploads_folder);
+    // Set the relative path from the uploads base
+    $this->relative_path = implode("/", $path_parts);
+
+    // Set the uploads path
+    $this->uploads_path = $this->relative_path ? $uploads_base . "/" . $this->relative_path: $uploads_base;
+  }
+
+  /**
+   * @author Jeremi Hirvensalo
+   * 
+   * Set the image size files.
+   * 
+   * @param array $image_data Image data. Must contain "sizes" key with an array value.
+   * 
+   * @return array
+   */
+  private function set_image_sizes(array $image_data) {
+    if(!isset($image_data["sizes"])) {
+
+      /**
+       * @todo add logging?
+       */
+      return;
+    }
+
+    $this->image_sizes = $image_data["sizes"];
   }
 }
