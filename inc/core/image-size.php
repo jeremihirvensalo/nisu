@@ -91,12 +91,6 @@ class Image_Size {
       return $this->filename;
     }
 
-
-    /**
-     * @todo CHECK THAT THE CODE BELOW WORKS. This has been written while on a plane 
-     * and the code has not been tested at all.
-     */
-
     $success = rename($this->get_absolute_filepath(), $new_filepath);
     if($success) {
 
