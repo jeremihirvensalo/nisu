@@ -35,3 +35,8 @@ add_filter("nisu_skip_image_size", function(bool $skip, string $image_size){
 }, 10, 2);
 
 ```
+
+
+## Regenerating the image sizes
+
+You can regenerate the image sizes trough the [wp media regenerate](https://developer.wordpress.org/cli/commands/media/regenerate/) command. If you want to get the default naming back for all images you can just deactivate this plugin and run the the mentioned command.
