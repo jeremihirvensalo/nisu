@@ -64,8 +64,18 @@ class Main {
       // Get the filepath with the image size slug
       $new_filepath = self::get_new_image_size_filepath($absolute_filepath, $size_slug, $default_image_size_suffix);
       
-      // $image->update_image_size_file($new_filename);
       $image_sizes[$size_slug]["file"] = $image_size->set_filepath($new_filepath);
+
+      /**
+       * Ran after the image size filename has been changed.
+       * 
+       * @param string The new absolute path to the image size file
+       * @param string The old absolute path to the image size file
+       * @param string The image size slug
+       * 
+       * @since 0.1.0
+       */
+      do_action("nisu_image_size_filename_changed", $new_filepath, $absolute_filepath, $size_slug);
     }
 
     $image_data["sizes"] = $image_sizes;
