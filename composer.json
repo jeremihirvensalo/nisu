@@ -1,0 +1,10 @@
+{
+  "name": "jeremihirvensalo/nisu",
+  "description": "Replaces the image size width and height with the size slug from the image filenames.",
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "NISU\\": "inc/"
+    }
+  }
+}
